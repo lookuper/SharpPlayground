@@ -4,9 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPlayground"
+        xmlns:avalon="clr-namespace:ICSharpCode.AvalonEdit.CodeCompletion;assembly=ICSharpCode.AvalonEdit"
         mc:Ignorable="d"
         Title="C# Playground" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" >
+            <MenuItem Header="File">
+                <MenuItem Header="Open File..." Click="OnFileOpenClick"  />
+                <MenuItem Header="Save File" Click="OnSaveFileClick"  />
+            </MenuItem>
+        </Menu>
+        <TabControl x:Name="tabs" />
+    </DockPanel>
 </Window>
