@@ -36,7 +36,6 @@ namespace SharpPlayground
 
             completion = new ICSharpCode.CodeCompletion.CSharpCompletion(new ScriptProvider());
             OpenFile(@"..\SampleFiles\Sample1.cs");
-            OpenFile(@"..\SampleFiles\SampleScript1.csx");
         }
 
         private void OnFileOpenClick(object sender, RoutedEventArgs e)
@@ -53,30 +52,15 @@ namespace SharpPlayground
 
         private void OnSaveFileClick(object sender, RoutedEventArgs e)
         {
-            var tabItem = tabs.SelectedItem as TabItem;
-            if (tabItem == null) return;
-            var editor = tabItem.Content as CodeTextEditor;
-
-            if (editor != null && editor.SaveFile())
-            {
-                MessageBox.Show("File Saved" + Environment.NewLine + editor.FileName);
-            }
         }
 
         private void OpenFile(string fileName)
         {
-            var editor = new CodeTextEditor();
-            editor.FontFamily = new FontFamily("Consolas");
-            editor.FontSize = 12;
-            editor.Completion = completion;
-            editor.OpenFile(fileName);
-            editor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C#");
-
-            var tabItem = new TabItem();
-            tabItem.Content = editor;
-            tabItem.Header = System.IO.Path.GetFileName(fileName);
-            tabs.Items.Add(tabItem);
-
+            textEditor.FontFamily = new FontFamily("Consolas");
+            textEditor.FontSize = 14;
+            textEditor.Completion = completion;
+            textEditor.OpenFile(fileName);
+            textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C#");
         }
     }
 }
