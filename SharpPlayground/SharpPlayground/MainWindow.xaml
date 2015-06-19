@@ -4,10 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPlayground"
-        xmlns:avalon="clr-namespace:ICSharpCode.CodeCompletion;assembly=ICSharpCode.CodeCompletion"
+        xmlns:editor="clr-namespace:ICSharpCode.CodeCompletion;assembly=ICSharpCode.CodeCompletion"
         mc:Ignorable="d"
-        Title="C# Playground" Height="350" Width="525">
-    <DockPanel>
-        <avalon:CodeTextEditor x:Name="textEditor"></avalon:CodeTextEditor>
-    </DockPanel>
+        Title="C# Playground" Height="700" Width="770">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="180"/>
+        </Grid.ColumnDefinitions>
+        <editor:CodeTextEditor Grid.Column="0"
+                               x:Name="textEditor"
+                               FontFamily="Consolas"
+                               FontSize="14"          
+                               SyntaxHighlighting="C#"
+                               VerticalScrollBarVisibility="Auto"
+                               HorizontalScrollBarVisibility="Auto"
+                               >         
+        </editor:CodeTextEditor>
+        
+        <GroupBox Grid.Column="1">
+            <DataGrid x:Name="outputGrid"
+                      HeadersVisibility="None"
+                      
+                      
+                      >
+                
+            </DataGrid>
+        </GroupBox>
+    </Grid>
 </Window>

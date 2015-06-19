@@ -28,6 +28,7 @@ namespace SharpPlayground
         public MainWindow()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -56,11 +57,8 @@ namespace SharpPlayground
 
         private void OpenFile(string fileName)
         {
-            textEditor.FontFamily = new FontFamily("Consolas");
-            textEditor.FontSize = 14;
             textEditor.Completion = completion;
             textEditor.OpenFile(fileName);
-            textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C#");
         }
     }
 }
