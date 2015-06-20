@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpPlayground"
         xmlns:editor="clr-namespace:ICSharpCode.CodeCompletion;assembly=ICSharpCode.CodeCompletion"
-        mc:Ignorable="d"
+        xmlns:this="clr-namespace:SharpPlayground"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        mc:Ignorable="d"        
         Title="C# Playground" Height="700" Width="770">
+    <Window.DataContext>
+        <this:PlaygroundViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -19,7 +24,12 @@
                                SyntaxHighlighting="C#"
                                VerticalScrollBarVisibility="Auto"
                                HorizontalScrollBarVisibility="Auto"
-                               >         
+                               ShowLineNumbers="True"
+                               Focusable="True"                              
+                               > 
+            <!--<i:Interaction.Behaviors>
+                <this:AvalonEditBehaviour GiveMeTheText="{Binding SourceCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </i:Interaction.Behaviors>-->
         </editor:CodeTextEditor>
         
         <GroupBox Grid.Column="1">

@@ -2,6 +2,8 @@
 using ICSharpCode.CodeCompletion;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SharpPlayground
 {
@@ -22,43 +25,64 @@ namespace SharpPlayground
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string AppTitle = "NRefactory Code Completion";
         private ICSharpCode.CodeCompletion.CSharpCompletion completion;
+        private readonly string _tempFile = "Program.cs";
+        //private readonly DispatcherTimer _autoSaveTimer = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(5)};
 
         public MainWindow()
         {
             InitializeComponent();
+
+            this.Closing += MainWindow_Closing;
+            //_autoSaveTimer.Tick += (s, e) => SaveToDisk();
+            //_autoSaveTimer.Start();
+
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            textEditor.Focus();
+
+            textEditor.Document.Changed += Document_Changed;
         }
+
+        private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
+        {
+            var i = 5;
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveToDisk();
+        }
+
+        public void SaveToDisk()
+        {
+            textEditor.SaveFile();
+        }
+
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-
             completion = new ICSharpCode.CodeCompletion.CSharpCompletion(new ScriptProvider());
             OpenFile(@"..\SampleFiles\Sample1.cs");
-        }
-
-        private void OnFileOpenClick(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".cs"; // Default file extension 
-            dlg.Filter = "C# Files|*.cs?|All Files|*.*"; // Filter files by extension 
-
-            if (dlg.ShowDialog() == true)
-            {
-                OpenFile(dlg.FileName);
-            }
-        }
-
-        private void OnSaveFileClick(object sender, RoutedEventArgs e)
-        {
         }
 
         private void OpenFile(string fileName)
         {
             textEditor.Completion = completion;
-            textEditor.OpenFile(fileName);
+
+            if (File.Exists(_tempFile))
+            {
+                textEditor.OpenFile(_tempFile);
+
+                if (!textEditor.Text.Contains("public static void Main()"))
+                {
+                    using (var m = new MemoryStream(Encoding.Default.GetBytes(SharpPlayground.Properties.Resources.EmptyProgram)))
+                    {
+                        textEditor.Clear();
+                        textEditor.Load(m);
+                    }
+                }
+            }
         }
     }
 }
