@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4A06
 		..\SampleFiles\Sample1.cs = ..\SampleFiles\Sample1.cs
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaygroundCompiler", "PlaygroundCompiler\PlaygroundCompiler.csproj", "{1648D618-C92D-4033-AA71-FF6F204ABA02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{82C28FBB-0408-466A-BE20-BD4A3CE76A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82C28FBB-0408-466A-BE20-BD4A3CE76A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82C28FBB-0408-466A-BE20-BD4A3CE76A75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
