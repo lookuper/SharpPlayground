@@ -40,11 +40,32 @@ namespace SharpPlayground
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             textEditor.Focus();
 
+            RegenerateLineResult();
+
             textEditor.Document.Changed += Document_Changed;
+        }
+
+        private void RegenerateLineResult()
+        {
+            var result = new List<LineResult>();
+            result = Enumerable.Range(0, textEditor.Document.LineCount)
+                .Select(x => new LineResult { Line = x, Value = "test", CanExpand = false })
+                .ToList();
+            outputGrid.ItemsSource = result;
         }
 
         private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
+            if (textEditor.Document.LineCount != outputGrid.Items.Count)
+            {
+                RegenerateLineResult();
+            }
+            //foreach (var item in Enumerable.Range(0, textEditor.Document.LineCount))
+            //{
+
+            //}
+
+
             var i = 5;
         }
 

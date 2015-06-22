@@ -33,13 +33,20 @@
         </editor:CodeTextEditor>
         
         <GroupBox Grid.Column="1">
-            <DataGrid x:Name="outputGrid"
-                      HeadersVisibility="None"
-                      
-                      
-                      >
-                
-            </DataGrid>
+            <ListView x:Name="outputGrid">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid MaxHeight="16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="{Binding Value}" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Button Content="*" IsEnabled="{Binding CanExpand}" Grid.Column="1" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </GroupBox>
     </Grid>
 </Window>

@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="AvalonEditBehaviour.cs" />
     <Compile Include="BaseViewModel.cs" />
+    <Compile Include="LineResult.cs" />
     <Compile Include="PlaygroundViewModel.cs" />
     <Compile Include="Program.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
