@@ -17,7 +17,9 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="180"/>
         </Grid.ColumnDefinitions>
-        <editor:CodeTextEditor Grid.Column="0"
+        
+        <GroupBox Grid.Column="0">
+            <editor:CodeTextEditor 
                                x:Name="textEditor"
                                FontFamily="Consolas"
                                FontSize="14"          
@@ -26,27 +28,22 @@
                                HorizontalScrollBarVisibility="Auto"
                                ShowLineNumbers="True"
                                Focusable="True"                              
-                               > 
-            <!--<i:Interaction.Behaviors>
-                <this:AvalonEditBehaviour GiveMeTheText="{Binding SourceCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </i:Interaction.Behaviors>-->
-        </editor:CodeTextEditor>
-        
-        <GroupBox Grid.Column="1">
-            <ListView x:Name="outputGrid">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid MaxHeight="16">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="20"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Content="{Binding Value}" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Button Content="*" IsEnabled="{Binding CanExpand}" Grid.Column="1" HorizontalAlignment="Right"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                               >
+            </editor:CodeTextEditor>
         </GroupBox>
+
+        <GroupBox Grid.Column="1">
+            <editor:CodeTextEditor 
+            x:Name="resultEditor"
+            FontFamily="Consolas"
+            FontSize="14"       
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto"
+            ShowLineNumbers="False"
+            IsEnabled="False"                  
+            >
+            </editor:CodeTextEditor>
+        </GroupBox>
+
     </Grid>
 </Window>

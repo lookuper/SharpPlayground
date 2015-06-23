@@ -46,25 +46,22 @@ namespace SharpPlayground
         }
 
         private void RegenerateLineResult()
-        {
-            var result = new List<LineResult>();
-            result = Enumerable.Range(0, textEditor.Document.LineCount)
-                .Select(x => new LineResult { Line = x, Value = "test", CanExpand = false })
+        { 
+            var generatedEmptyLines = Enumerable.Range(0, textEditor.Document.LineCount)
+                .Select(x => new LineResult { Line = x, Value = x.ToString(), CanExpand = false })
                 .ToList();
-            outputGrid.ItemsSource = result;
+
+            resultEditor.DataContext = generatedEmptyLines;
+            resultEditor.Text = String.Join(Environment.NewLine, generatedEmptyLines.Select(x => "\"" + x.Value + "\""));
+                 
         }
 
         private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
-            if (textEditor.Document.LineCount != outputGrid.Items.Count)
+            if (textEditor.Document.LineCount != resultEditor.Document.LineCount)
             {
                 RegenerateLineResult();
             }
-            //foreach (var item in Enumerable.Range(0, textEditor.Document.LineCount))
-            //{
-
-            //}
-
 
             var i = 5;
         }
