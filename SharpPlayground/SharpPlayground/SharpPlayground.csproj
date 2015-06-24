@@ -114,6 +114,10 @@
       <Project>{82c28fbb-0408-466a-be20-bd4a3ce76a75}</Project>
       <Name>ICSharpCode.CodeCompletion</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PlaygroundCompiler\PlaygroundCompiler.csproj">
+      <Project>{1648d618-c92d-4033-aa71-ff6f204aba02}</Project>
+      <Name>PlaygroundCompiler</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

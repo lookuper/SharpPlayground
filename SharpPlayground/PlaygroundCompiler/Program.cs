@@ -25,6 +25,11 @@ namespace PlaygroundCompiler
     {
         static void Main(string[] args)
         {
+
+            var p = new PlaygroundCompilerFacade(PlaygroundCompiler.Properties.Resources.TestCode + "/-i;");
+            var d = p.GetSourceCodeDiagnostics(p.SourceCode);
+
+
             var code = PlaygroundCompiler.Properties.Resources.TestCode;
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code + "");
             var diagnosticAfterParsing = syntaxTree.GetDiagnostics()?.ToList();

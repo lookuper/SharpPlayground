@@ -16,7 +16,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="180"/>
-        </Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>       
         
         <GroupBox Grid.Column="0">
             <editor:CodeTextEditor 
@@ -33,17 +33,28 @@
         </GroupBox>
 
         <GroupBox Grid.Column="1">
+            <ListView x:Name="output">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <Label Content="{Binding Value}" Height="16" Margin="0" Padding="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </GroupBox>
+        <!--<GroupBox Grid.Column="1">
             <editor:CodeTextEditor 
             x:Name="resultEditor"
             FontFamily="Consolas"
             FontSize="14"       
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Auto"
-            ShowLineNumbers="False"
-            IsEnabled="False"                  
+            ShowLineNumbers="False"    
+            IsReadOnly="True"
             >
             </editor:CodeTextEditor>
-        </GroupBox>
+        </GroupBox>-->
 
     </Grid>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.CodeCompletion;
+using PlaygroundCompiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,6 +28,7 @@ namespace SharpPlayground
     {
         private ICSharpCode.CodeCompletion.CSharpCompletion completion;
         private readonly string _tempFile = "Program.cs";
+        private PlaygroundCompilerFacade compilerFacade = new PlaygroundCompilerFacade();
         //private readonly DispatcherTimer _autoSaveTimer = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(5)};
 
         public MainWindow()
@@ -47,23 +49,38 @@ namespace SharpPlayground
 
         private void RegenerateLineResult()
         { 
-            var generatedEmptyLines = Enumerable.Range(0, textEditor.Document.LineCount)
+            var generatedEmptyLines = Enumerable.Range(1, textEditor.Document.LineCount)
                 .Select(x => new LineResult { Line = x, Value = x.ToString(), CanExpand = false })
                 .ToList();
 
-            resultEditor.DataContext = generatedEmptyLines;
-            resultEditor.Text = String.Join(Environment.NewLine, generatedEmptyLines.Select(x => "\"" + x.Value + "\""));
-                 
+            output.ItemsSource = generatedEmptyLines;
+            //resultEditor.DataContext = generatedEmptyLines;
+            //resultEditor.Text = String.Join(Environment.NewLine, generatedEmptyLines.Select(x => "\"" + x.Value + "\""));
+
         }
 
         private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
-            if (textEditor.Document.LineCount != resultEditor.Document.LineCount)
+            if (textEditor.Document.LineCount != output.Items.Count)
             {
                 RegenerateLineResult();
+                return;
             }
 
-            var i = 5;
+            var res = compilerFacade.GetSourceCodeDiagnostics(textEditor.Text);
+            if (res.Count() != 0)
+            {
+                foreach (var item in res)
+                {
+                    
+                    var lineString = item.Substring(1, 2);
+                    var lineNumber = Int32.Parse(lineString);
+
+                    var lr = output.Items.GetItemAt(15) as LineResult;
+                    lr.Value = item;
+                    output.UpdateLayout();
+                }
+            }
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -82,6 +99,8 @@ namespace SharpPlayground
             base.OnInitialized(e);
             completion = new ICSharpCode.CodeCompletion.CSharpCompletion(new ScriptProvider());
             OpenFile(@"..\SampleFiles\Sample1.cs");
+
+            var res = compilerFacade.GetSourceCodeDiagnostics(textEditor.Text);
         }
 
         private void OpenFile(string fileName)
