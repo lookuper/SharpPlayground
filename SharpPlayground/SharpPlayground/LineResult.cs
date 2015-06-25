@@ -6,10 +6,17 @@ using System.Threading.Tasks;
 
 namespace SharpPlayground
 {
-    public class LineResult
+    public class LineResult : BaseViewModel
     {
         public int Line { get; set; }
-        public string Value { get; set; }
+
+        private string _value;
+        public string Value
+        {
+            get { return _value; }
+            set { _value = value; OnPropertyChanged("Value"); }
+        }
+
         public bool CanExpand { get; set; }
     }
 }

@@ -11,9 +11,19 @@ namespace SharpPlayground
 {
     public sealed class AvalonEditBehaviour : Behavior<TextEditor>
     {
+        public static readonly DependencyProperty LinesCount =
+            DependencyProperty.Register("GiveMeTheLinesCount", typeof(int), typeof(AvalonEditBehaviour),
+            new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PropertyChangedLinesCallback));
+
         public static readonly DependencyProperty GiveMeTheTextProperty =
             DependencyProperty.Register("GiveMeTheText", typeof(string), typeof(AvalonEditBehaviour),
             new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PropertyChangedCallback));
+
+        public int GiveMeTheLinesCount
+        {
+            get { return (int)GetValue(LinesCount); }
+            set { SetValue(LinesCount, value); }
+        }
 
         public string GiveMeTheText
         {
@@ -25,7 +35,9 @@ namespace SharpPlayground
         {
             base.OnAttached();
             if (AssociatedObject != null)
+            {
                 AssociatedObject.TextChanged += AssociatedObjectOnTextChanged;
+            }
         }
 
         protected override void OnDetaching()
@@ -41,8 +53,15 @@ namespace SharpPlayground
             if (textEditor != null)
             {
                 if (textEditor.Document != null)
-                    GiveMeTheText = textEditor.Document.Text;
+                {
+                    GiveMeTheLinesCount = textEditor.LineCount;
+                    GiveMeTheText = textEditor.Document.Text;                    
+                }
             }
+        }
+
+        private static void PropertyChangedLinesCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
         }
 
         private static void PropertyChangedCallback(
