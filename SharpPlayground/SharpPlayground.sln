@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4A06
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaygroundCompiler", "PlaygroundCompiler\PlaygroundCompiler.csproj", "{1648D618-C92D-4033-AA71-FF6F204ABA02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTypes", "CommonTypes\CommonTypes.csproj", "{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1648D618-C92D-4033-AA71-FF6F204ABA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
