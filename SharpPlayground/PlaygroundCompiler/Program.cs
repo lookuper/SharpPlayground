@@ -27,7 +27,7 @@ namespace PlaygroundCompiler
         {
 
             var p = new PlaygroundCompilerFacade(PlaygroundCompiler.Properties.Resources.TestCode + "/-i;");
-            var d = p.GetSourceCodeDiagnostics(p.SourceCode);
+            //var d = p.GetSourceCodeDiagnostics(p.SourceCode);
 
 
             var code = PlaygroundCompiler.Properties.Resources.TestCode;

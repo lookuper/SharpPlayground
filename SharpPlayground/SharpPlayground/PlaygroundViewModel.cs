@@ -55,16 +55,13 @@ namespace SharpPlayground
 
         private void FillCodeDiagnostics()
         {
-            var res = compilerFacade.GetSourceCodeDiagnostics(SourceCode);
-            if (res.Count() != 0)
+            var diagMessages = compilerFacade.GetSourceCodeDiagnostics(SourceCode);
+            if (diagMessages.Count != 0)
             {
-                foreach (var item in res)
+                foreach (var message in diagMessages)
                 {
-                    var lineString = item.Substring(1, 2);
-                    var lineNumber = Int32.Parse(lineString);
-
-                    var lr = Output.ElementAt(lineNumber) as LineResult;
-                    lr.Value += item;
+                    var line = Output.ElementAt(message.LineNumber);
+                    line.Value += message;                    
                 }
             }
         }
