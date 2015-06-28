@@ -40,7 +40,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <Label Content="{Binding Value}" Height="16" Margin="0" Padding="0"/>
+                            <Label Content="{Binding Value}" Height="15" Margin="0" Padding="0"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

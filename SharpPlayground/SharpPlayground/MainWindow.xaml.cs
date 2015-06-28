@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.CodeCompletion;
+using ICSharpCode.NRefactory.Editor;
 using PlaygroundCompiler;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace SharpPlayground
 {
@@ -30,6 +32,8 @@ namespace SharpPlayground
         private readonly string _tempFile = "Program.cs";
         private PlaygroundCompilerFacade compilerFacade = new PlaygroundCompilerFacade();
         private PlaygroundViewModel ViewModel;
+        private static int _sendIteration;
+
         //private readonly DispatcherTimer _autoSaveTimer = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(5)};
 
         public MainWindow()
@@ -49,27 +53,15 @@ namespace SharpPlayground
 
         private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
-            ViewModel.DocumentChangedEvent(e);            
-            //if (textEditor.Document.LineCount != output.Items.Count)
-            //{
-            //    RegenerateLineResult();
-            //    return;
-            //}
+            // awfull
+            if (_sendIteration != 2)
+            {
+                _sendIteration++;
+                return;
+            }       
 
-            //var res = compilerFacade.GetSourceCodeDiagnostics(textEditor.Text);
-            //if (res.Count() != 0)
-            //{
-            //    foreach (var item in res)
-            //    {
-                    
-            //        var lineString = item.Substring(1, 2);
-            //        var lineNumber = Int32.Parse(lineString);
-
-            //        var lr = output.Items.GetItemAt(15) as LineResult;
-            //        lr.Value = item;
-            //        output.UpdateLayout();
-            //    }
-            //}
+            ViewModel.DocumentChangedEvent(e);
+            _sendIteration = 0;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

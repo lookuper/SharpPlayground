@@ -49,8 +49,8 @@ namespace SharpPlayground
         {
             if (EditorLines != Output.Count)
                 RegenerateLineResult();
-
-            FillCodeDiagnostics();
+            else
+                FillCodeDiagnostics();
         }
 
         private void FillCodeDiagnostics()
@@ -58,21 +58,46 @@ namespace SharpPlayground
             var diagMessages = compilerFacade.GetSourceCodeDiagnostics(SourceCode);
             if (diagMessages.Count != 0)
             {
-                foreach (var message in diagMessages)
+                foreach (var diagResult in diagMessages)
                 {
-                    var line = Output.ElementAt(message.LineNumber);
-                    line.Value += message;                    
+                    var line = Output.ElementAtOrDefault(diagResult.LineNumber);
+
+                    if (line == null)
+                    {
+                        RegenerateLineResultWithoutCodeDiagnostic();
+                        return;
+                    }
+
+                    line.Value += " " + diagResult.Message;                    
                 }
             }
+            else
+            {
+                // remove previour errors
+                foreach (var item in Output)
+                {
+                    item.Value = String.Empty;
+                }
+            }
+        }
+
+        public void RegenerateLineResultWithoutCodeDiagnostic()
+        {
+            var generatedEmptyLines = Enumerable.Range(1, EditorLines)
+                .Select(x => new LineResult { Line = x, Value = String.Empty, CanExpand = false })
+                .ToList();
+
+            Output = generatedEmptyLines;
         }
 
         public void RegenerateLineResult()
         {
             var generatedEmptyLines = Enumerable.Range(1, EditorLines)
-                .Select(x => new LineResult { Line = x, Value = x.ToString(), CanExpand = false })
+                .Select(x => new LineResult { Line = x, Value = String.Empty, CanExpand = false })
                 .ToList();
 
-            Output = generatedEmptyLines; FillCodeDiagnostics();
+            Output = generatedEmptyLines;
+            FillCodeDiagnostics();
         }
     }
 }
