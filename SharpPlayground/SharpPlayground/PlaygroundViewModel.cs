@@ -45,12 +45,23 @@ namespace SharpPlayground
             Output = new List<LineResult>();
         }
 
-        public void DocumentChangedEvent(DocumentChangeEventArgs e)
+        public void DocumentChangedEvent(String text)
         {
+            if (!ShouldCompile(text))
+                return;
+
             if (EditorLines != Output.Count)
                 RegenerateLineResult();
             else
                 FillCodeDiagnostics();
+        }
+
+        private bool ShouldCompile(string text)
+        {
+            if (text == ";" || text == Environment.NewLine)
+                return true;
+            else
+                return false;
         }
 
         private void FillCodeDiagnostics()

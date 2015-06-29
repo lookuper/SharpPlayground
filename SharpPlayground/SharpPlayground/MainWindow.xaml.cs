@@ -33,6 +33,7 @@ namespace SharpPlayground
         private PlaygroundCompilerFacade compilerFacade = new PlaygroundCompilerFacade();
         private PlaygroundViewModel ViewModel;
         private static int _sendIteration;
+        private static string _sendText;
 
         //private readonly DispatcherTimer _autoSaveTimer = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(5)};
 
@@ -54,14 +55,28 @@ namespace SharpPlayground
         private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
             // awfull
+            //if (_sendIteration == 0)
+            //{
+            //    var s = e as TextChangeEventArgs;
+            //    var text = s.InsertedText.Text;
+            //    _sendText = text;
+            //}
+            var s = e as TextChangeEventArgs;
+            var text = s.InsertedText.Text;
+
+            if (s.InsertionLength == 1 || text.Equals(Environment.NewLine))
+                _sendText = text;
+
             if (_sendIteration != 2)
             {
                 _sendIteration++;
                 return;
-            }       
+            }
 
-            ViewModel.DocumentChangedEvent(e);
+
+            ViewModel.DocumentChangedEvent(_sendText);
             _sendIteration = 0;
+            _sendText = null;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
