@@ -1,5 +1,7 @@
 ﻿using CommonTypes;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +13,16 @@ namespace PlaygroundCompiler
     public class PlaygroundCompilerFacade
     {
         public string SourceCode { get; private set; }
+        public SyntaxTree Tree { get; private set; }
+        public CompilationUnitSyntax Root { get; private set; }
+        public IList<LiteralExpressionSyntax> Literals { get; private set; }
 
         public PlaygroundCompilerFacade()
         {
-
+            Literals = new List<LiteralExpressionSyntax>();
         }
 
-        public PlaygroundCompilerFacade(string input)
+        public PlaygroundCompilerFacade(string input) : this()
         {
             if (String.IsNullOrEmpty(input))
                 throw new ArgumentException(nameof(input));
@@ -27,8 +32,10 @@ namespace PlaygroundCompiler
 
         public IList<SyntaxTreeDiagnosticResult> GetSourceCodeDiagnostics(string sourceCode)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(sourceCode);
-            var dig = syntaxTree.GetDiagnostics();
+            Tree = CSharpSyntaxTree.ParseText(sourceCode);
+            Root = Tree.GetRoot() as CompilationUnitSyntax;
+
+            var dig = Tree.GetDiagnostics();
             var diagMessages = dig?
                 .Select(d => new SyntaxTreeDiagnosticResult(d.ToString()))
                 .ToList();
@@ -37,6 +44,15 @@ namespace PlaygroundCompiler
                 return new List<SyntaxTreeDiagnosticResult>();
 
             return diagMessages;
+        }
+
+        public IList<LiteralExpressionSyntax> GetLiterals()
+        {
+            var res = Root.DescendantNodes()
+                .OfType<LiteralExpressionSyntax>()
+                .ToList();
+
+            return res;
         }
     }
 }

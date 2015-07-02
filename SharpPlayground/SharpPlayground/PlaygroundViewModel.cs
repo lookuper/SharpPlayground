@@ -64,6 +64,28 @@ namespace SharpPlayground
                 return false;
         }
 
+        private void FillCodeLiterals()
+        {
+            if (compilerFacade.Root == null)
+                return;
+
+            foreach (var literal in compilerFacade.GetLiterals())
+            {
+                var lineNumber = literal.GetLocation()
+                    .GetMappedLineSpan()
+                    .StartLinePosition
+                    .Line;
+
+                var value = literal.Token.Value;
+                var element = Output.ElementAtOrDefault(lineNumber);
+
+                if (element != null)
+                    element.Value = value.ToString();
+
+                var i = 5;
+            } 
+
+        }
         private void FillCodeDiagnostics()
         {
             var diagMessages = compilerFacade.GetSourceCodeDiagnostics(SourceCode);
@@ -109,6 +131,7 @@ namespace SharpPlayground
 
             Output = generatedEmptyLines;
             FillCodeDiagnostics();
+            FillCodeLiterals();
         }
     }
 }
