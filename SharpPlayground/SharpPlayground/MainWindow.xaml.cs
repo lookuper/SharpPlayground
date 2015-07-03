@@ -50,17 +50,17 @@ namespace SharpPlayground
             textEditor.Focus();        
             ViewModel.RegenerateLineResult();
             textEditor.Document.Changed += Document_Changed;
+            textEditor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
+        }
+
+        private void TextView_ScrollOffsetChanged(object sender, EventArgs e)
+        {
+            //int firstLine = textEditor.TextArea.TextView.GetDocumentLineByVisualTop(textEditor.TextArea.TextView.ScrollOffset.Y).LineNumber;
+            sc2.ScrollToVerticalOffset(textEditor.TextArea.TextView.VerticalOffset);
         }
 
         private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
-            // awfull
-            //if (_sendIteration == 0)
-            //{
-            //    var s = e as TextChangeEventArgs;
-            //    var text = s.InsertedText.Text;
-            //    _sendText = text;
-            //}
             var s = e as TextChangeEventArgs;
             var text = s.InsertedText.Text;
 
