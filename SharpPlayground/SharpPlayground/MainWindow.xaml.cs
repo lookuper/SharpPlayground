@@ -115,5 +115,10 @@ namespace SharpPlayground
                 }
             }
         }
+
+        private void sc2_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            textEditor.ScrollToVerticalOffset(e.VerticalOffset);
+        }
     }
 }

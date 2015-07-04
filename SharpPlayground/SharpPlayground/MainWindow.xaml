@@ -39,7 +39,7 @@
         </GroupBox>
 
         <GroupBox Grid.Column="1">
-            <ScrollViewer Name="sc2" >
+            <ScrollViewer Name="sc2" ScrollChanged="sc2_ScrollChanged" >
                 <ListView x:Name="output" ItemsSource="{Binding Output}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
