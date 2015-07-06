@@ -41,9 +41,21 @@ namespace PlaygroundCompiler
                 .ToList();
 
             if (diagMessages == null || diagMessages.Count == 0)
+            {
+                Compile();
                 return new List<SyntaxTreeDiagnosticResult>();
+            }
 
             return diagMessages;
+        }
+
+        public void Compile()
+        {
+            var compilation = CSharpCompilation.Create("TestCompile")
+                .AddReferences(MetadataReference.CreateFromFile((typeof(Object).Assembly.Location)))
+                .AddSyntaxTrees(Tree);
+
+            var semanticModel = compilation.GetSemanticModel(Tree); 
         }
 
         public IList<LiteralExpressionSyntax> GetLiterals()
