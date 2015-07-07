@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PlaygroundCompiler
@@ -51,9 +52,15 @@ namespace PlaygroundCompiler
 
         public void Compile()
         {
-            var compilation = CSharpCompilation.Create("TestCompile")
-                .AddReferences(MetadataReference.CreateFromFile((typeof(Object).Assembly.Location)))
-                .AddSyntaxTrees(Tree);
+            var compilation = CSharpCompilation.Create("TestCompile", new[] { Tree },
+                new MetadataReference[]
+                {
+                    MetadataReference.CreateFromFile(typeof(Object).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
+                }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
+
+            var compilationRoot = compilation.GetDiagnostics();
 
             var semanticModel = compilation.GetSemanticModel(Tree); 
         }
