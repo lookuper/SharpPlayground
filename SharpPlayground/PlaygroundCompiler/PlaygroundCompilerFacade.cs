@@ -11,12 +11,19 @@ using System.Threading.Tasks;
 
 namespace PlaygroundCompiler
 {
-    public class PlaygroundCompilerFacade
+    public class PlaygroundCompilerFacade : BaseViewModel
     {
         public string SourceCode { get; private set; }
         public SyntaxTree Tree { get; private set; }
         public CompilationUnitSyntax Root { get; private set; }
         public IList<LiteralExpressionSyntax> Literals { get; private set; }
+
+        private List<Diagnostic> _diagnosticMessages;
+        public List<Diagnostic> DiagnosticMessages
+        {
+            get { return _diagnosticMessages; }
+            set { _diagnosticMessages = value; OnPropertyChanged("DiagnosticMessages"); }
+        }
 
         public PlaygroundCompilerFacade()
         {
@@ -60,7 +67,7 @@ namespace PlaygroundCompiler
                     MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
                 }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
 
-            var compilationRoot = compilation.GetDiagnostics();
+            DiagnosticMessages = compilation.GetDiagnostics().ToList();
 
             var semanticModel = compilation.GetSemanticModel(Tree); 
         }
