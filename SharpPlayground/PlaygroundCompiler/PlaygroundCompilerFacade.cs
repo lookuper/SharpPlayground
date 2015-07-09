@@ -18,8 +18,8 @@ namespace PlaygroundCompiler
         public CompilationUnitSyntax Root { get; private set; }
         public IList<LiteralExpressionSyntax> Literals { get; private set; }
 
-        private List<Diagnostic> _diagnosticMessages;
-        public List<Diagnostic> DiagnosticMessages
+        private List<SyntaxTreeDiagnosticResult> _diagnosticMessages;
+        public List<SyntaxTreeDiagnosticResult> DiagnosticMessages
         {
             get { return _diagnosticMessages; }
             set { _diagnosticMessages = value; OnPropertyChanged("DiagnosticMessages"); }
@@ -54,6 +54,7 @@ namespace PlaygroundCompiler
                 return new List<SyntaxTreeDiagnosticResult>();
             }
 
+            DiagnosticMessages = diagMessages;
             return diagMessages;
         }
 
@@ -67,7 +68,9 @@ namespace PlaygroundCompiler
                     MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
                 }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
 
-            DiagnosticMessages = compilation.GetDiagnostics().ToList();
+            DiagnosticMessages = compilation.GetDiagnostics()
+                .Select(d => new SyntaxTreeDiagnosticResult(d.ToString()))
+                .ToList();
 
             var semanticModel = compilation.GetSemanticModel(Tree); 
         }
