@@ -1,4 +1,5 @@
-﻿using ICSharpCode.AvalonEdit.Document;
+﻿using CommonTypes;
+using ICSharpCode.AvalonEdit.Document;
 using PlaygroundCompiler;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,13 @@ namespace SharpPlayground
         {
             get { return _output; }
             set { _output = value; OnPropertyChanged("Output"); }
+        }
+
+        private IList<SyntaxTreeDiagnosticResult> _diagnostics;
+        public IList<SyntaxTreeDiagnosticResult> Diagnostics
+        {
+            get { return _diagnostics; }
+            set { _diagnostics = value; OnPropertyChanged("Diagnostics"); }
         }
 
         public PlaygroundViewModel()
@@ -88,6 +96,7 @@ namespace SharpPlayground
         }
         private void FillCodeDiagnostics()
         {
+            Diagnostics = compilerFacade.DiagnosticMessages;
             var diagMessages = compilerFacade.GetSourceCodeDiagnostics(SourceCode);
             if (diagMessages.Count != 0)
             {
