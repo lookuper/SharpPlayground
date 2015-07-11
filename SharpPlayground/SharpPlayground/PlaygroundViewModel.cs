@@ -61,7 +61,10 @@ namespace SharpPlayground
             if (EditorLines != Output.Count)
                 RegenerateLineResult();
             else
+            {
                 FillCodeDiagnostics();
+                FillCodeLiterals();
+            }
         }
 
         private bool ShouldCompile(string text)
