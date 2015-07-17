@@ -12,13 +12,33 @@ using System.Threading.Tasks;
 
 namespace PlaygroundCompiler
 {
+    class Walker : SyntaxWalker
+    {
+        public SemanticModel CurrentSemanticModel { get; set; }
+
+        public override void Visit(SyntaxNode node)
+        {
+            if (node is ExpressionSyntax)
+            {
+                var tes = node as ExpressionSyntax;                
+
+            }
+            base.Visit(node);
+        }
+    }
+
     class UsingCollector : CSharpSyntaxWalker
     {
         public readonly List<LiteralExpressionSyntax> Variables = new List<LiteralExpressionSyntax>();
-        
+
         public override void VisitLiteralExpression(LiteralExpressionSyntax node)
         {
             base.VisitLiteralExpression(node);
+        }
+
+        public override void VisitIdentifierName(IdentifierNameSyntax node)
+        {
+            base.VisitIdentifierName(node);
         }
     }
     class Program

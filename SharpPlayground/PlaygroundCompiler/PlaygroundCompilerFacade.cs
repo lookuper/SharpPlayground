@@ -72,7 +72,41 @@ namespace PlaygroundCompiler
                 .Select(d => new SyntaxTreeDiagnosticResult(d.ToString()))
                 .ToList();
 
-            var semanticModel = compilation.GetSemanticModel(Tree); 
+            var semanticModel = compilation.GetSemanticModel(Tree);
+            var root = Tree.GetRoot();
+
+            var variableDeclarations = root.DescendantNodes()
+                .OfType<LocalDeclarationStatementSyntax>()
+                .ToList();
+
+            var expressions = root.DescendantNodes()
+                .OfType<ExpressionSyntax>()
+                .ToList();
+
+            var variables = root.DescendantNodes()
+                .OfType<VariableDeclaratorSyntax>()
+                .ToList();
+
+            var declarator = variables[1];
+            //var initializerExpression = declarator.Initializer.Value as ExpressionSyntax;
+            //var test = initializerExpression.Expressions;
+
+            foreach (var varDeclaration in variableDeclarations)
+            {
+                //var test = semanticModel.GetDeclaredSymbol(varDeclaration);
+                //var symbolInfo = semanticModel.GetSymbolInfo(varDeclaration.Declaration.Type);
+                //var typeSymbol = symbolInfo.Symbol;
+
+                //var test = semanticModel.GetSymbolInfo(varDeclaration);
+                //var test2 = semanticModel.GetDeclaredSymbol(varDeclaration.Declaration.Variables[0]);
+
+                //semanticModel.GetSymbolInfo()
+            }
+
+            //var uc = new UsingCollector();
+            //uc.Visit(Tree.GetRoot());
+            //var s = semanticModel.LookupSymbols(20);
+            //semanticModel.GetSymbolInfo()
         }
 
         public IList<LiteralExpressionSyntax> GetLiterals()
