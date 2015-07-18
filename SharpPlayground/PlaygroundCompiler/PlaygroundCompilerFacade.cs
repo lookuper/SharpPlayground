@@ -1,5 +1,6 @@
 ﻿using CommonTypes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -87,12 +88,54 @@ namespace PlaygroundCompiler
                 .OfType<VariableDeclaratorSyntax>()
                 .ToList();
 
-            var declarator = variables[1];
+            var assigments = root.DescendantNodes()
+                .OfType<AssignmentExpressionSyntax>()
+                .ToList();
+
+            var literals = root.DescendantNodes()
+                .OfType<LiteralExpressionSyntax>()
+                .ToList();
+
+            var identifiers = root.DescendantNodes()
+                .OfType<IdentifierNameSyntax>()
+                .ToList();
+
+            var binaryExpressions = root.DescendantNodes()
+                .OfType<BinaryExpressionSyntax>()
+                .ToList();
+
+            foreach (var variable in variableDeclarations)
+            {
+                var symbol = semanticModel.GetDeclaredSymbol(variable as SyntaxNode);
+            }
+
+            //var numericLiteralExpression = root.FindToken(306).Parent.Parent.Parent.Parent as ExpressionSyntax;// (new Microsoft.CodeAnalysis.Text.TextSpan(306, 3));
+            var numericLiteralExpression = root.FindToken(300).Parent as ExpressionSyntax;// (new Microsoft.CodeAnalysis.Text.TextSpan(306, 3));
+
+            var info = semanticModel.GetConstantValue(numericLiteralExpression);
+            var test = semanticModel.GetSymbolInfo(numericLiteralExpression).Symbol;
+
+            var analyzeExpression = semanticModel.AnalyzeDataFlow(numericLiteralExpression);
+            
+            var compilationUnit = root as CompilationUnitSyntax;
+
+            //var a = semanticModel.AnalyzeDataFlow(Root).AlwaysAssigned;
+
+            var codeWalker = new CodeWalker(semanticModel);
+            codeWalker.Visit(compilationUnit);
+
+
+
+            //var declarator = variables[1];
             //var initializerExpression = declarator.Initializer.Value as ExpressionSyntax;
             //var test = initializerExpression.Expressions;
 
-            foreach (var varDeclaration in variableDeclarations)
+            foreach (var varDeclaration in variables)
             {
+                var symbolInfo = semanticModel.GetSymbolInfo(varDeclaration);
+                var declaredSymbol = semanticModel.GetDeclaredSymbol(varDeclaration);         
+
+                //var test = semanticModel.GetPreprocessingSymbolInfo(varDeclaration);
                 //var test = semanticModel.GetDeclaredSymbol(varDeclaration);
                 //var symbolInfo = semanticModel.GetSymbolInfo(varDeclaration.Declaration.Type);
                 //var typeSymbol = symbolInfo.Symbol;
