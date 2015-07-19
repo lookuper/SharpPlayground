@@ -12,6 +12,13 @@ namespace CommonTypes
         public int LinePosition { get; set; }
         public string Message { get; set; }
 
+        public SyntaxTreeDiagnosticResult(int line, int column, string message)
+        {
+            LineNumber = line;
+            LinePosition = column;
+            Message = message;
+        }
+
         public SyntaxTreeDiagnosticResult(string diagnosticString)
         {
             if (String.IsNullOrEmpty(diagnosticString))

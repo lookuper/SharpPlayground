@@ -3,12 +3,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 
 namespace PlaygroundCompiler
 {
@@ -69,9 +72,17 @@ namespace PlaygroundCompiler
                     MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
                 }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
 
-            DiagnosticMessages = compilation.GetDiagnostics()
-                .Select(d => new SyntaxTreeDiagnosticResult(d.ToString()))
-                .ToList();
+            //using (var outputStream = new MemoryStream())
+            //{
+            //    var restult = compilation.Emit(outputStream);
+
+            //    var assembly = Assembly.Load(outputStream.ToArray());
+            //    assembly.EntryPoint.Invoke(null, new Object[] { });
+            //}
+
+            //DiagnosticMessages = compilation.GetDiagnostics()
+            //    .Select(d => new SyntaxTreeDiagnosticResult(d.ToString()))
+            //    .ToList();
 
             var semanticModel = compilation.GetSemanticModel(Tree);
             var root = Tree.GetRoot();
@@ -100,56 +111,52 @@ namespace PlaygroundCompiler
                 .OfType<IdentifierNameSyntax>()
                 .ToList();
 
-            var binaryExpressions = root.DescendantNodes()
-                .OfType<BinaryExpressionSyntax>()
+            var invocationExpression = root.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
                 .ToList();
 
-            foreach (var variable in variableDeclarations)
+            var binaryExpressions = root.DescendantNodes()
+                .OfType<BinaryExpressionSyntax>()
+                .OrderBy(x => x.FullSpan)
+                .ToList();
+
+            var resultingList = new List<SyntaxTreeDiagnosticResult>();
+
+            foreach (var variable in binaryExpressions)
             {
-                var symbol = semanticModel.GetDeclaredSymbol(variable as SyntaxNode);
+                var startLine = Tree.GetLineSpan(variable.Span).StartLinePosition;
+                var value = semanticModel.GetConstantValue(variable);
+                var syntaxResult = new SyntaxTreeDiagnosticResult(startLine.Line, 0, value.Value?.ToString());
+
+                if (!value.HasValue)
+                {
+                    var  res = new StringBuilder();
+                    foreach (var item in variable.ChildNodesAndTokens())
+                    {
+                        if (item.IsToken)
+                        {
+                            res.Append(item.ToFullString());
+                            continue;
+                        }
+
+                        var expressionValue = semanticModel.GetConstantValue(item.AsNode());
+
+                        if (!expressionValue.HasValue)
+                        {
+                            res.Append(item.ToFullString());
+                        }
+                        else
+                            res.Append(expressionValue.Value?.ToString());
+                    }
+
+                    syntaxResult.LinePosition = -1;
+                    syntaxResult.Message = res.ToString();
+
+                    resultingList.Add(syntaxResult);
+                }
+                else
+                    resultingList.Add(syntaxResult);
             }
-
-            //var numericLiteralExpression = root.FindToken(306).Parent.Parent.Parent.Parent as ExpressionSyntax;// (new Microsoft.CodeAnalysis.Text.TextSpan(306, 3));
-            var numericLiteralExpression = root.FindToken(300).Parent as ExpressionSyntax;// (new Microsoft.CodeAnalysis.Text.TextSpan(306, 3));
-
-            var info = semanticModel.GetConstantValue(numericLiteralExpression);
-            var test = semanticModel.GetSymbolInfo(numericLiteralExpression).Symbol;
-
-            var analyzeExpression = semanticModel.AnalyzeDataFlow(numericLiteralExpression);
-            
-            var compilationUnit = root as CompilationUnitSyntax;
-
-            //var a = semanticModel.AnalyzeDataFlow(Root).AlwaysAssigned;
-
-            var codeWalker = new CodeWalker(semanticModel);
-            codeWalker.Visit(compilationUnit);
-
-
-
-            //var declarator = variables[1];
-            //var initializerExpression = declarator.Initializer.Value as ExpressionSyntax;
-            //var test = initializerExpression.Expressions;
-
-            foreach (var varDeclaration in variables)
-            {
-                var symbolInfo = semanticModel.GetSymbolInfo(varDeclaration);
-                var declaredSymbol = semanticModel.GetDeclaredSymbol(varDeclaration);         
-
-                //var test = semanticModel.GetPreprocessingSymbolInfo(varDeclaration);
-                //var test = semanticModel.GetDeclaredSymbol(varDeclaration);
-                //var symbolInfo = semanticModel.GetSymbolInfo(varDeclaration.Declaration.Type);
-                //var typeSymbol = symbolInfo.Symbol;
-
-                //var test = semanticModel.GetSymbolInfo(varDeclaration);
-                //var test2 = semanticModel.GetDeclaredSymbol(varDeclaration.Declaration.Variables[0]);
-
-                //semanticModel.GetSymbolInfo()
-            }
-
-            //var uc = new UsingCollector();
-            //uc.Visit(Tree.GetRoot());
-            //var s = semanticModel.LookupSymbols(20);
-            //semanticModel.GetSymbolInfo()
         }
 
         public IList<LiteralExpressionSyntax> GetLiterals()

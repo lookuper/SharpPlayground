@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
@@ -23,7 +24,10 @@ namespace PlaygroundCompiler
             CurrentSemanticModel = model;
         }
 
-
+        public override void VisitVariableDeclaration(VariableDeclarationSyntax node)
+        {
+            base.VisitVariableDeclaration(node);
+        }
 
         public override void VisitBinaryExpression(BinaryExpressionSyntax node)
         {
@@ -31,24 +35,24 @@ namespace PlaygroundCompiler
             base.VisitBinaryExpression(node);
         }
 
-        public override void Visit(SyntaxNode node)
-        {
-            if (node is ExpressionSyntax)
-            {
-                var constant = CurrentSemanticModel.GetConstantValue(node);
-                if (constant.HasValue)
-                    Debug.WriteLine(constant.Value);
-            }
+        //public override void Visit(SyntaxNode node)
+        //{
+        //    if (node is ExpressionSyntax)
+        //    {
+        //        var constant = CurrentSemanticModel.GetConstantValue(node);
+        //        if (constant.HasValue)
+        //            Debug.WriteLine(constant.Value);
+        //    }
 
-            //if (node is AssignmentExpressionSyntax)
-            //{
-            //    var assigment = node as AssignmentExpressionSyntax;
-            //    var assigmentInfo = CurrentSemanticModel.GetSymbolInfo(node).Symbol;
-            //    var declaredSymbolInfo = CurrentSemanticModel.GetDeclaredSymbol(node);
+        //    //if (node is AssignmentExpressionSyntax)
+        //    //{
+        //    //    var assigment = node as AssignmentExpressionSyntax;
+        //    //    var assigmentInfo = CurrentSemanticModel.GetSymbolInfo(node).Symbol;
+        //    //    var declaredSymbolInfo = CurrentSemanticModel.GetDeclaredSymbol(node);
 
-            //    int i = 5;
-            //}
-            base.Visit(node);
-        }
+        //    //    int i = 5;
+        //    //}
+        //    base.Visit(node);
+        //}
     }
 }
