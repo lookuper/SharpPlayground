@@ -55,6 +55,7 @@ namespace PlaygroundCompiler
             if (diagMessages == null || diagMessages.Count == 0)
             {
                 Compile();
+
                 return new List<SyntaxTreeDiagnosticResult>();
             }
 
@@ -72,50 +73,9 @@ namespace PlaygroundCompiler
                     MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
                 }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
 
-            //using (var outputStream = new MemoryStream())
-            //{
-            //    var restult = compilation.Emit(outputStream);
-
-            //    var assembly = Assembly.Load(outputStream.ToArray());
-            //    assembly.EntryPoint.Invoke(null, new Object[] { });
-            //}
-
-            //DiagnosticMessages = compilation.GetDiagnostics()
-            //    .Select(d => new SyntaxTreeDiagnosticResult(d.ToString()))
-            //    .ToList();
-
             var semanticModel = compilation.GetSemanticModel(Tree);
-            var root = Tree.GetRoot();
 
-            var variableDeclarations = root.DescendantNodes()
-                .OfType<LocalDeclarationStatementSyntax>()
-                .ToList();
-
-            var expressions = root.DescendantNodes()
-                .OfType<ExpressionSyntax>()
-                .ToList();
-
-            var variables = root.DescendantNodes()
-                .OfType<VariableDeclaratorSyntax>()
-                .ToList();
-
-            var assigments = root.DescendantNodes()
-                .OfType<AssignmentExpressionSyntax>()
-                .ToList();
-
-            var literals = root.DescendantNodes()
-                .OfType<LiteralExpressionSyntax>()
-                .ToList();
-
-            var identifiers = root.DescendantNodes()
-                .OfType<IdentifierNameSyntax>()
-                .ToList();
-
-            var invocationExpression = root.DescendantNodes()
-                .OfType<InvocationExpressionSyntax>()
-                .ToList();
-
-            var binaryExpressions = root.DescendantNodes()
+            var binaryExpressions = Root.DescendantNodes()
                 .OfType<BinaryExpressionSyntax>()
                 .OrderBy(x => x.FullSpan)
                 .ToList();
@@ -157,6 +117,8 @@ namespace PlaygroundCompiler
                 else
                     resultingList.Add(syntaxResult);
             }
+
+            DiagnosticMessages = resultingList;
         }
 
         public IList<LiteralExpressionSyntax> GetLiterals()

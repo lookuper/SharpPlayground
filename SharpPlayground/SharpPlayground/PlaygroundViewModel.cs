@@ -92,14 +92,13 @@ namespace SharpPlayground
 
                 if (element != null)
                     element.Value = value.ToString();
+            }
 
-                var i = 5;
-            } 
+            FillCodeDiagnostics(compilerFacade.DiagnosticMessages.OrderByDescending(x => x.LinePosition).ToList());
 
         }
         private void FillCodeDiagnostics()
-        {
-            Diagnostics = compilerFacade.DiagnosticMessages;
+        {            
             var diagMessages = compilerFacade.GetSourceCodeDiagnostics(SourceCode);
             if (diagMessages.Count != 0)
             {
@@ -123,6 +122,15 @@ namespace SharpPlayground
                 {
                     item.Value = String.Empty;
                 }
+            }
+        }
+
+        private void FillCodeDiagnostics(IList<SyntaxTreeDiagnosticResult> source)
+        {
+            foreach (var compilationConstant in source)
+            {
+                var line = Output.ElementAtOrDefault(compilationConstant.LineNumber);
+                line.Value = compilationConstant.Message;
             }
         }
 
