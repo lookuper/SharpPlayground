@@ -32,6 +32,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaygroundCompiler", "Playg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTypes", "CommonTypes\CommonTypes.csproj", "{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxUITestApp", "RxUITestApp\RxUITestApp.csproj", "{45C3C825-65E2-44F2-832B-BBE174E69CE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RxUINet45", "RxUINet45", "{EBB56202-5EF2-4F32-BD42-9A4DFA67F57D}"
+	ProjectSection(SolutionItems) = preProject
+		..\Lib\RxUINet45\ReactiveUI.dll = ..\Lib\RxUINet45\ReactiveUI.dll
+		..\Lib\RxUINet45\ReactiveUI.pdb = ..\Lib\RxUINet45\ReactiveUI.pdb
+		..\Lib\RxUINet45\Splat.dll = ..\Lib\RxUINet45\Splat.dll
+		..\Lib\RxUINet45\Splat.pdb = ..\Lib\RxUINet45\Splat.pdb
+		..\Lib\RxUINet45\System.Reactive.Core.dll = ..\Lib\RxUINet45\System.Reactive.Core.dll
+		..\Lib\RxUINet45\System.Reactive.Core.xml = ..\Lib\RxUINet45\System.Reactive.Core.xml
+		..\Lib\RxUINet45\System.Reactive.Interfaces.dll = ..\Lib\RxUINet45\System.Reactive.Interfaces.dll
+		..\Lib\RxUINet45\System.Reactive.Interfaces.xml = ..\Lib\RxUINet45\System.Reactive.Interfaces.xml
+		..\Lib\RxUINet45\System.Reactive.Linq.dll = ..\Lib\RxUINet45\System.Reactive.Linq.dll
+		..\Lib\RxUINet45\System.Reactive.Linq.xml = ..\Lib\RxUINet45\System.Reactive.Linq.xml
+		..\Lib\RxUINet45\System.Reactive.PlatformServices.dll = ..\Lib\RxUINet45\System.Reactive.PlatformServices.dll
+		..\Lib\RxUINet45\System.Reactive.PlatformServices.xml = ..\Lib\RxUINet45\System.Reactive.PlatformServices.xml
+		..\Lib\RxUINet45\System.Reactive.Windows.Threading.dll = ..\Lib\RxUINet45\System.Reactive.Windows.Threading.dll
+		..\Lib\RxUINet45\System.Reactive.Windows.Threading.xml = ..\Lib\RxUINet45\System.Reactive.Windows.Threading.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,8 +78,15 @@ Global
 		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E2589C7-52A4-45D5-A9FA-7707FEA9AC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45C3C825-65E2-44F2-832B-BBE174E69CE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45C3C825-65E2-44F2-832B-BBE174E69CE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45C3C825-65E2-44F2-832B-BBE174E69CE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45C3C825-65E2-44F2-832B-BBE174E69CE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EBB56202-5EF2-4F32-BD42-9A4DFA67F57D} = {F297D562-4C66-4C9F-BCE7-AE42E43741A9}
 	EndGlobalSection
 EndGlobal
