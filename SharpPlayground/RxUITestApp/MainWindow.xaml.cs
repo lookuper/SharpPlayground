@@ -23,8 +23,11 @@ namespace RxUITestApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public AppViewModel ViewModel { get; private set; }
+
         public MainWindow()
         {
+            ViewModel = new AppViewModel();
             InitializeComponent();
         }
     }
