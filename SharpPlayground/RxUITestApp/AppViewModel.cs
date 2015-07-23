@@ -35,9 +35,10 @@ namespace RxUITestApp
 
         public ReactiveCommand<Object> ExecuteSearch { get; protected set; }
 
-        public AppViewModel()
+        public AppViewModel(ReactiveCommand<Object> testExecuteSearchCommand = null, IObservable<FlickrPhoto> testSearchResult = null)
         {
-            GetSearchResultFromFlickr("cat");
+            var i = 5;
+            //GetSearchResultFromFlickr("cat");
         }
 
         public static List<FlickrPhoto> GetSearchResultFromFlickr(string searchTerm)
