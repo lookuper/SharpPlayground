@@ -29,6 +29,7 @@ namespace RxUITestApp
         {
             ViewModel = new AppViewModel();
             InitializeComponent();
+            //this.DataContext = ViewModel;
         }
     }
 }
