@@ -11,11 +11,19 @@ using System.Web;
 using System.Windows;
 using System.Xml.Linq;
 using HtmlAgilityPack;
+using Bing;
+using System.Net;
+using System.Windows.Data;
+using System.Collections.ObjectModel;
 
 namespace RxUITestApp
 {
     public class AppViewModel : ReactiveObject
     {
+        static string key = "moAb5YRNPZQNjUvDpy3ckYbFLIJo+6mMbXdTEQn8iqU";
+        static BingSearchContainer bing = new BingSearchContainer(new Uri("https://api.datamarket.azure.com/Bing/Search/"))
+        { Credentials = new NetworkCredential(key, key) };
+
         private string _searchTerm;
         public string SearchTerm
         {
@@ -23,8 +31,8 @@ namespace RxUITestApp
             set { this.RaiseAndSetIfChanged(ref _searchTerm, value); }
         }
 
-        private ObservableAsPropertyHelper<List<FlickrPhoto>> _searchResults;
-        public List<FlickrPhoto> SearchResults
+        private ObservableAsPropertyHelper<ObservableCollection<FlickrPhoto>> _searchResults;
+        public ObservableCollection<FlickrPhoto> SearchResults
         {
             get { return _searchResults.Value; }
         }
@@ -36,10 +44,12 @@ namespace RxUITestApp
         }
 
         public ReactiveCommand<Object> ExecuteSearch { get; protected set; }
+        public ReactiveCommand<Object> LoadMoreItems { get; protected set; }
 
-        public AppViewModel(ReactiveCommand<Object> testExecuteSearchCommand = null, IObservable<List<FlickrPhoto>> testSearchResult = null)
-        {
+        public AppViewModel(ReactiveCommand<Object> testExecuteSearchCommand = null, IObservable<ObservableCollection<FlickrPhoto>> testSearchResult = null)
+        {       
             ExecuteSearch = testExecuteSearchCommand ?? ReactiveCommand.Create();
+            LoadMoreItems = ReactiveCommand.Create();
 
             this.ObservableForProperty(x => x.SearchTerm)
                 .Throttle(TimeSpan.FromMilliseconds(800), RxApp.TaskpoolScheduler)
@@ -52,52 +62,63 @@ namespace RxUITestApp
                 .Select(x => x ? Visibility.Visible : Visibility.Collapsed)
                 .ToProperty(this, x => x.SpinnerVisibility, Visibility.Hidden);
 
-            IObservable<List<FlickrPhoto>> results;
+            IObservable<ObservableCollection<FlickrPhoto>> results;
             if (testSearchResult != null)
                 results = testSearchResult;
             else
-                results = ExecuteSearch.Select(term => GetSearchResultFromGoogle((string)term));
-                //results = ExecuteSearch.Select(term => GetSearchResultFromFlickr((string)term));
+                results = ExecuteSearch.Select(term => GetSearchResultFromBing((string)term));
 
-            _searchResults = results.ToProperty(this, x => x.SearchResults, new List<FlickrPhoto>());
-            SearchTerm = "cat";
+            _searchResults = results.ToProperty(this, x => x.SearchResults, new ObservableCollection<FlickrPhoto>());
+
+            LoadMoreItems
+                .Select(x => LoadMore((int)x))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    foreach (var item in x)
+                    {
+                        SearchResults.Add(item);
+                    }
+                });
+
+
+            SearchTerm = "british cat";
         }
 
-        public static List<FlickrPhoto> GetSearchResultFromGoogle(string searchTerm)
+        public static ObservableCollection<FlickrPhoto> GetSearchResultFromBing(string searchTerm)
         {
-            //var doc = XDocument.Load(String.Format(CultureInfo.InvariantCulture,
-            //    "http://www.google.com.ua/#q={0}",
-            //    HttpUtility.UrlEncode(searchTerm)));
+            var query = bing.Image(searchTerm, null, null, null, null, null, "Size:Small");
+            query = query.AddQueryOption("$top", 7);
+            //query = query.AddQueryOption("$size", "small");
 
-            var web = new HtmlWeb();            
-            var doc = web.Load(String.Format("http://www.google.com.ua/#q={0}&tbm=isch", searchTerm));
+            var results = query.Execute();            
 
-            //var nodes = GetUrls(doc.DocumentNode.InnerHtml);
-            var xpath = "//*[@id=\"rg_s\"]/div";
-            var nodes = doc.DocumentNode.SelectNodes("//*[@id=\"rg_s\"]/div")?.ToList();
-            //*[@id="rg_s"]/div[1]/a/img
-            //*[@id="rg_s"]/div[2]/a/img
-            //*[@id="rg_s"]/div[1]/a/img
-
-            return null;
-        }
-
-        private static List<string> GetUrls(string html)
-        {
-            var urls = new List<string>();
-            int ndx = html.IndexOf("class=\"images_table\"", StringComparison.Ordinal);
-            ndx = html.IndexOf("<img", ndx, StringComparison.Ordinal);
-
-            while (ndx >= 0)
+            var res = results.Select(x => new FlickrPhoto
             {
-                ndx = html.IndexOf("src=\"", ndx, StringComparison.Ordinal);
-                ndx = ndx + 5;
-                int ndx2 = html.IndexOf("\"", ndx, StringComparison.Ordinal);
-                string url = html.Substring(ndx, ndx2 - ndx);
-                urls.Add(url);
-                ndx = html.IndexOf("<img", ndx, StringComparison.Ordinal);
-            }
-            return urls;
+                Title = x.Title,
+                Description = x.Title,
+                Url = x.MediaUrl
+            }).ToList();
+
+            return new ObservableCollection<FlickrPhoto>(res);
+        }
+
+        public ObservableCollection<FlickrPhoto> LoadMore(int count)
+        {
+            var query = bing.Image(SearchTerm, null, null, null, null, null, "Size:Small");
+            query = query.AddQueryOption("$skip", SearchResults.Count);
+            query = query.AddQueryOption("$top", 7);
+
+            var results = query.Execute();
+
+            var res = results.Select(x => new FlickrPhoto
+            {
+                Title = x.Title,
+                Description = x.Title,
+                Url = x.MediaUrl
+            }).ToList();
+
+            return new ObservableCollection<FlickrPhoto>(res);
         }
 
         public static List<FlickrPhoto> GetSearchResultFromFlickr(string searchTerm)

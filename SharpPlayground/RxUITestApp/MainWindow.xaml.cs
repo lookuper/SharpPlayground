@@ -29,7 +29,17 @@ namespace RxUITestApp
         {
             ViewModel = new AppViewModel();
             InitializeComponent();
-            //this.DataContext = ViewModel;
+            resultList.AddHandler(ScrollViewer.ScrollChangedEvent, new ScrollChangedEventHandler(listBox_ScrollChanged));
+        }
+
+        private void listBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.ExtentHeight == e.VerticalOffset + e.ViewportHeight && e.VerticalOffset != 0)
+            {
+                // load more cats
+                //ViewModel.LoadMore((int)e.ExtentHeight);
+                ViewModel.LoadMoreItems.Execute((int)e.ExtentHeight);
+            }
         }
     }
 }
