@@ -23,11 +23,13 @@ namespace RxUITestApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        public AppViewModel ViewModel { get; private set; }
+        //public AppViewModel ViewModel { get; private set; }
+        public ViewModel2 ViewModel { get; set; }
 
         public MainWindow()
         {
-            ViewModel = new AppViewModel();
+            //ViewModel = new AppViewModel();
+            ViewModel = new ViewModel2();
             InitializeComponent();
             resultList.AddHandler(ScrollViewer.ScrollChangedEvent, new ScrollChangedEventHandler(listBox_ScrollChanged));
         }

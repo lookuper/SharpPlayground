@@ -89,7 +89,6 @@ namespace RxUITestApp
         {
             var query = bing.Image(searchTerm, null, null, null, null, null, "Size:Small");
             query = query.AddQueryOption("$top", 7);
-            //query = query.AddQueryOption("$size", "small");
 
             var results = query.Execute();            
 
