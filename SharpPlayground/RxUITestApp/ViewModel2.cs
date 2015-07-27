@@ -70,7 +70,7 @@ namespace RxUITestApp
                 .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                 .InvokeCommand(this, x => x.Search);
 
-            SearchTerm = "british cat";
+            //SearchTerm = "british cat";
         }
 
         public Task<List<FlickrPhoto>> GetSearchResultFromBing(string searchTerm)

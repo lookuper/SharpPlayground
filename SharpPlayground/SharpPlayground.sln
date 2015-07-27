@@ -52,6 +52,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RxUINet45", "RxUINet45", "{
 		..\Lib\RxUINet45\System.Reactive.Windows.Threading.xml = ..\Lib\RxUINet45\System.Reactive.Windows.Threading.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{CCEE3FA5-B073-4758-9DB9-2339B7BD088B}"
+	ProjectSection(SolutionItems) = preProject
+		..\Screenshots\RxUI.gif = ..\Screenshots\RxUI.gif
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
