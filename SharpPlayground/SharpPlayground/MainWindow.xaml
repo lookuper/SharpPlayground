@@ -10,7 +10,7 @@
         mc:Ignorable="d"        
         Title="C# Playground" Height="700" Width="770">
     <Window.DataContext>
-        <this:PlaygroundViewModel/>
+        <this:ReactivePlaygroundViewModel/>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>

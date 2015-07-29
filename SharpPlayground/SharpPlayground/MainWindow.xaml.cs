@@ -31,26 +31,22 @@ namespace SharpPlayground
         private ICSharpCode.CodeCompletion.CSharpCompletion completion;
         private readonly string _tempFile = "Program.cs";
         private PlaygroundCompilerFacade compilerFacade = new PlaygroundCompilerFacade();
-        private PlaygroundViewModel ViewModel;
+        private ReactivePlaygroundViewModel ViewModel;
         private static int _sendIteration;
         private static string _sendText;
-
-        //private readonly DispatcherTimer _autoSaveTimer = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(5)};
 
         public MainWindow()
         {
             InitializeComponent();
 
-            ViewModel = this.DataContext as PlaygroundViewModel;
+            ViewModel = this.DataContext as ReactivePlaygroundViewModel;
             this.Closing += MainWindow_Closing;
-            //_autoSaveTimer.Tick += (s, e) => SaveToDisk();
-            //_autoSaveTimer.Start();
-
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            textEditor.Focus();        
-            ViewModel.RegenerateLineResult();
-            textEditor.Document.Changed += Document_Changed;
-            textEditor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
+            textEditor.Focus();
+
+            //ViewModel.RegenerateLineResult();
+            //textEditor.Document.Changed += Document_Changed;
+            //textEditor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
         }
 
         private void TextView_ScrollOffsetChanged(object sender, EventArgs e)
@@ -74,7 +70,7 @@ namespace SharpPlayground
             }
 
 
-            ViewModel.DocumentChangedEvent(_sendText);
+            ViewModel.DocumentChanged.Execute(_sendText);
             _sendIteration = 0;
             _sendText = null;
         }
@@ -88,7 +84,6 @@ namespace SharpPlayground
         {
             textEditor.SaveFile();
         }
-
 
         protected override void OnInitialized(EventArgs e)
         {
