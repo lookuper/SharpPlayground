@@ -20,6 +20,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit.Document;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.ComponentModel;
+using ReactiveUI;
 
 namespace SharpPlayground
 {
@@ -30,8 +34,8 @@ namespace SharpPlayground
     {
         private ICSharpCode.CodeCompletion.CSharpCompletion completion;
         private readonly string _tempFile = "Program.cs";
-        private PlaygroundCompilerFacade compilerFacade = new PlaygroundCompilerFacade();
         private ReactivePlaygroundViewModel ViewModel;
+
         private static int _sendIteration;
         private static string _sendText;
 
@@ -40,13 +44,35 @@ namespace SharpPlayground
             InitializeComponent();
 
             ViewModel = this.DataContext as ReactivePlaygroundViewModel;
-            this.Closing += MainWindow_Closing;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             textEditor.Focus();
 
             //ViewModel.RegenerateLineResult();
+
+            var appClosing = Observable.FromEventPattern<CancelEventHandler, CancelEventArgs>(
+                h => this.Closing += h,
+                h => this.Closing -= h);
+            appClosing.Subscribe(value => { SaveToDisk(); });
+
             //textEditor.Document.Changed += Document_Changed;
-            //textEditor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
+            var documentChanged = Observable.FromEventPattern<DocumentChangeEventArgs>(
+                h => textEditor.Document.Changed += h,
+                h => textEditor.Document.Changed -= h);
+            var subscription = documentChanged
+                .Throttle(TimeSpan.FromMilliseconds(800))
+                .DistinctUntilChanged()
+                .Select(x => _sendText)
+                .InvokeCommand(ViewModel.DocumentChanged);
+            //.Subscribe(value => { var i = value.EventArgs; });
+
+            textEditor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            completion = new ICSharpCode.CodeCompletion.CSharpCompletion(new ScriptProvider());
+            OpenFile(@"..\SampleFiles\Sample1.cs");
         }
 
         private void TextView_ScrollOffsetChanged(object sender, EventArgs e)
@@ -69,7 +95,6 @@ namespace SharpPlayground
                 return;
             }
 
-
             ViewModel.DocumentChanged.Execute(_sendText);
             _sendIteration = 0;
             _sendText = null;
@@ -83,13 +108,6 @@ namespace SharpPlayground
         public void SaveToDisk()
         {
             textEditor.SaveFile();
-        }
-
-        protected override void OnInitialized(EventArgs e)
-        {
-            base.OnInitialized(e);
-            completion = new ICSharpCode.CodeCompletion.CSharpCompletion(new ScriptProvider());
-            OpenFile(@"..\SampleFiles\Sample1.cs");
         }
 
         private void OpenFile(string fileName)

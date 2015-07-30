@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using PlaygroundCompiler;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace SharpPlayground
 {
     public class ReactivePlaygroundViewModel : ReactiveObject
     {
+        private PlaygroundCompilerFacade compilerFacade = new PlaygroundCompilerFacade();
+
         private string _sourceCode;
         public string SourceCode
         {
@@ -33,5 +36,10 @@ namespace SharpPlayground
 
         public ReactiveCommand<Object> DocumentChanged { get; protected set; }
         public ReactiveList<LineResult> Output { get; protected set; }
+
+        public ReactivePlaygroundViewModel()
+        {
+            DocumentChanged = ReactiveCommand.Create();
+        }
     }
 }
