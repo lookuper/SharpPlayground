@@ -63,6 +63,16 @@ namespace PlaygroundCompiler
             return diagMessages;
         }
 
+        public Task<List<SyntaxTreeDiagnosticResult>> Compile(bool asnc)
+        {
+            var t = Task.Run(() =>
+            {
+                return new List<SyntaxTreeDiagnosticResult>();
+            });
+
+            return t;
+        }
+
         public void Compile()
         {
             var compilation = CSharpCompilation.Create("TestCompile", new[] { Tree },

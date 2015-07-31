@@ -55,14 +55,14 @@ namespace SharpPlayground
             appClosing.Subscribe(value => { SaveToDisk(); });
 
             //textEditor.Document.Changed += Document_Changed;
-            var documentChanged = Observable.FromEventPattern<DocumentChangeEventArgs>(
-                h => textEditor.Document.Changed += h,
-                h => textEditor.Document.Changed -= h);
-            var subscription = documentChanged
-                .Throttle(TimeSpan.FromMilliseconds(800))
-                .DistinctUntilChanged()
-                .Select(x => _sendText)
-                .InvokeCommand(ViewModel.DocumentChanged);
+            //var documentChanged = Observable.FromEventPattern<DocumentChangeEventArgs>(
+            //    h => textEditor.Document.Changed += h,
+            //    h => textEditor.Document.Changed -= h);
+            //var subscription = documentChanged
+            //    .Throttle(TimeSpan.FromMilliseconds(800))
+            //    .DistinctUntilChanged()
+            //    .Select(x => _sendText)
+            //    .InvokeCommand(ViewModel.DocumentChanged);
             //.Subscribe(value => { var i = value.EventArgs; });
 
             textEditor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
@@ -81,24 +81,24 @@ namespace SharpPlayground
             sc2.ScrollToVerticalOffset(textEditor.TextArea.TextView.VerticalOffset);
         }
 
-        private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
-        {
-            var s = e as TextChangeEventArgs;
-            var text = s.InsertedText.Text;
+        //private void Document_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
+        //{
+        //    var s = e as TextChangeEventArgs;
+        //    var text = s.InsertedText.Text;
 
-            if (s.InsertionLength == 1 || text.Equals(Environment.NewLine))
-                _sendText = text;
+        //    if (s.InsertionLength == 1 || text.Equals(Environment.NewLine))
+        //        _sendText = text;
 
-            if (_sendIteration != 2)
-            {
-                _sendIteration++;
-                return;
-            }
+        //    if (_sendIteration != 2)
+        //    {
+        //        _sendIteration++;
+        //        return;
+        //    }
 
-            ViewModel.DocumentChanged.Execute(_sendText);
-            _sendIteration = 0;
-            _sendText = null;
-        }
+        //    ViewModel.DocumentChanged.Execute(_sendText);
+        //    _sendIteration = 0;
+        //    _sendText = null;
+        //}
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
