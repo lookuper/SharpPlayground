@@ -63,7 +63,7 @@ namespace PlaygroundCompiler
             return diagMessages;
         }
 
-        public Task<List<SyntaxTreeDiagnosticResult>> Compile(bool asnc)
+        public Task<List<SyntaxTreeDiagnosticResult>> Compile(string sourceCode)
         {
             var t = Task.Run(() =>
             {

@@ -1,4 +1,5 @@
-﻿using ICSharpCode.AvalonEdit.Document;
+﻿using CommonTypes;
+using ICSharpCode.AvalonEdit.Document;
 using PlaygroundCompiler;
 using ReactiveUI;
 using System;
@@ -28,24 +29,15 @@ namespace SharpPlayground
             set { this.RaiseAndSetIfChanged(ref _editorLines, value); }
         }
 
-        private TextDocument _document;
-        public TextDocument Document
-        {
-            get { return _document; }
-            set { this.RaiseAndSetIfChanged(ref _document, value); }
-        }
-
-        public ReactiveCommand<Object> DocumentChanged { get; protected set; }
+        public ReactiveCommand<List<SyntaxTreeDiagnosticResult>> DocumentChanged { get; protected set; }
 
         private ObservableAsPropertyHelper<ReactiveList<LineResult>> _output;
         public ReactiveList<LineResult> Output { get { return _output.Value; }  }
 
         public ReactivePlaygroundViewModel()
         {
-            var canSearch = this.WhenAny(x => x.SourceCode, x => !String.IsNullOrWhiteSpace(x.Value));
-            //DocumentChanged = ReactiveCommand.CreateAsyncTask(canSearch, async _ => {
-            //    return await compilerFacade.Compile(true);
-            //});
+            //var canSearch = this.WhenAny(x => x.SourceCode, x => !String.IsNullOrWhiteSpace(x.Value));
+            DocumentChanged = ReactiveCommand.CreateAsyncTask(async value => { return await compilerFacade.Compile((String)value); });
 
             this.ObservableForProperty(x => x.SourceCode)
                 .Throttle(TimeSpan.FromMilliseconds(700))
