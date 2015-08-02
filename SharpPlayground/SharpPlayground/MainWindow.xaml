@@ -20,7 +20,7 @@
         
         <GroupBox Grid.Column="0">
 
-                <editor:CodeTextEditor 
+            <editor:CodeTextEditor 
                                x:Name="textEditor"
                                FontFamily="Consolas"
                                FontSize="14"          
@@ -29,7 +29,7 @@
                                HorizontalScrollBarVisibility="Auto"
                                ShowLineNumbers="True"
                                >
-                    <i:Interaction.Behaviors>
+                <i:Interaction.Behaviors>
                         <this:AvalonEditBehaviour GiveMeTheText="{Binding SourceCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <this:AvalonEditBehaviour GiveMeTheLinesCount="{Binding EditorLines, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
                     </i:Interaction.Behaviors>
@@ -43,8 +43,12 @@
                 <ListView x:Name="output" ItemsSource="{Binding Output}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <Label Content="{Binding Value}" Height="16" Margin="0" Padding="0"/>
+                            <StackPanel Margin="0">
+                                <Label Content="{Binding Value}"
+                                       FontFamily="Consolas"
+                                       VerticalContentAlignment="Center"
+                                       HorizontalContentAlignment="Center"
+                                       MaxHeight="12.27" Margin="0,0,0,0" Padding="0,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
