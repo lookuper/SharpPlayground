@@ -12,6 +12,9 @@ namespace CommonTypes
         public int LinePosition { get; set; }
         public string Message { get; set; }
 
+        public string Name { get; set; }
+        public string Value { get; set; }
+
         public SyntaxTreeDiagnosticResult(int line, int column, string message)
         {
             LineNumber = line;

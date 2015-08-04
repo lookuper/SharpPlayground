@@ -11,7 +11,7 @@ namespace CommonTypes
     {
         Stack<String> PreviousCompilationSourceCode { get; }
 
-        void Compile(string sourceCode, ScriptOptions options = null);
+        IEnumerable<SyntaxTreeDiagnosticResult> Compile(string sourceCode, ScriptOptions options = null);
 
         IEnumerable<SyntaxTreeDiagnosticResult> DiagnosticMessages { get; }
         IEnumerable<SyntaxTreeDiagnosticResult> GetVariables();        

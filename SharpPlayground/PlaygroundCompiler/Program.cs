@@ -30,31 +30,34 @@ namespace PlaygroundCompiler
     {
         static void Main(string[] args)
         {
+            var engine = RoslynCompilerFacade.Instance;
 
-            var p = new PlaygroundCompilerFacade(PlaygroundCompiler.Properties.Resources.TestCode + "/-i;");
-            //var d = p.GetSourceCodeDiagnostics(p.SourceCode);
+            var res = engine.Compile("using System; var i = 6; i = ++i + ++i;");
+            
+            //var p = new PlaygroundCompilerFacade(PlaygroundCompiler.Properties.Resources.TestCode + "/-i;");
+            ////var d = p.GetSourceCodeDiagnostics(p.SourceCode);
 
 
-            var code = PlaygroundCompiler.Properties.Resources.TestCode;
-            SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code + "");
-            var diagnosticAfterParsing = syntaxTree.GetDiagnostics()?.ToList();
+            //var code = PlaygroundCompiler.Properties.Resources.TestCode;
+            //SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(code + "");
+            //var diagnosticAfterParsing = syntaxTree.GetDiagnostics()?.ToList();
 
-            var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
+            //var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
 
-            var uc = new UsingCollector();
-            uc.Visit(root);
+            //var uc = new UsingCollector();
+            //uc.Visit(root);
 
-            var usings = uc.Variables.ToList();
+            //var usings = uc.Variables.ToList();
 
-            var firstMember = root.Members[0];
-            var declaration = (NamespaceDeclarationSyntax)firstMember;
-            var programDeclaration = (ClassDeclarationSyntax)declaration.Members[0];
-            var mainDeclaration = (MethodDeclarationSyntax)programDeclaration.Members[0];
+            //var firstMember = root.Members[0];
+            //var declaration = (NamespaceDeclarationSyntax)firstMember;
+            //var programDeclaration = (ClassDeclarationSyntax)declaration.Members[0];
+            //var mainDeclaration = (MethodDeclarationSyntax)programDeclaration.Members[0];
 
-            var firstParameter = from methodDeclaration in root.DescendantNodes()
-                                 .OfType<MethodDeclarationSyntax>()
-                                 where methodDeclaration.Identifier.ValueText == "Main"
-                                 select methodDeclaration.Modifiers.FirstOrDefault();
+            //var firstParameter = from methodDeclaration in root.DescendantNodes()
+            //                     .OfType<MethodDeclarationSyntax>()
+            //                     where methodDeclaration.Identifier.ValueText == "Main"
+            //                     select methodDeclaration.Modifiers.FirstOrDefault();
 
             //var literalInfo = root.DescendantNodes()
             //    .OfType<LiteralExpressionSyntax>()

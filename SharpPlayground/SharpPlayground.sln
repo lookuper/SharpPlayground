@@ -67,6 +67,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RoslynManualBuild", "Roslyn
 		..\Lib\RoslynManualBuild\Microsoft.CodeAnalysis.Scripting.dll = ..\Lib\RoslynManualBuild\Microsoft.CodeAnalysis.Scripting.dll
 		..\Lib\RoslynManualBuild\Microsoft.CodeAnalysis.Workspaces.Desktop.dll = ..\Lib\RoslynManualBuild\Microsoft.CodeAnalysis.Workspaces.Desktop.dll
 		..\Lib\RoslynManualBuild\Microsoft.CodeAnalysis.Workspaces.dll = ..\Lib\RoslynManualBuild\Microsoft.CodeAnalysis.Workspaces.dll
+		..\Lib\RoslynManualBuild\System.Reflection.Metadata.dll = ..\Lib\RoslynManualBuild\System.Reflection.Metadata.dll
 	EndProjectSection
 EndProject
 Global

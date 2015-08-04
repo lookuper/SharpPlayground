@@ -43,21 +43,37 @@ namespace PlaygroundCompiler
 
         }
 
-        public void Compile(string sourceCode, ScriptOptions options = null)
+        public IEnumerable<SyntaxTreeDiagnosticResult> Compile(string sourceCode, ScriptOptions options = null)
         {
             if (String.IsNullOrEmpty(sourceCode))
                 throw new ArgumentException(nameof(sourceCode));
 
             _previousCompilations.Push(sourceCode);
 
-            Script prev = _scriptQueue.Count > 0 ? _scriptQueue.Pop() : null;
+            Script prev = _scriptQueue.Any() ? _scriptQueue.Pop() : null;
 
-            var script = CSharpScript.Create(sourceCode, DefaultOptions).WithPrevious(prev);
-            var endState = script.RunAsync();
+            var script = CSharpScript.Create(sourceCode, options ?? DefaultOptions).WithPrevious(prev);
+            ScriptState endState = null;
+
+            try { endState = script.RunAsync(); }
+            catch (CompilationErrorException ex)
+            {
+                var compilationError = new SyntaxTreeDiagnosticResult(ex.Message);
+                _diagnosticMessages.Add(compilationError);
+            }
+
             _scriptQueue.Push(endState.Script);
-            
-            //_variables = endState.Variables
-            throw new NotImplementedException();
+
+            if (endState.Variables != null)
+            {
+                var res = endState.Variables
+                    .Select(v => new SyntaxTreeDiagnosticResult(-1, -1, v.Name + v.Value) { Name = v.Name, Value = v.Value.ToString() })
+                    .ToList();
+
+                _variables.AddRange(res);
+            }
+
+            return _diagnosticMessages.Any() ? _diagnosticMessages : _variables;
         }
     }
 }
