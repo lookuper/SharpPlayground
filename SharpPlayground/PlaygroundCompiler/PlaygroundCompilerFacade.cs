@@ -65,12 +65,66 @@ namespace PlaygroundCompiler
 
         public Task<List<SyntaxTreeDiagnosticResult>> Compile(string sourceCode)
         {
-            var t = Task.Run(() =>
+            return Task.Run(() =>
             {
-                return new List<SyntaxTreeDiagnosticResult>();
-            });
+                var errors = GetSourceCodeDiagnostics(sourceCode);
+                if (errors != null && errors.Count > 0)
+                    return errors.ToList();
 
-            return t;
+                var compilation = CSharpCompilation.Create("TestCompile", new[] { Tree },
+                    new MetadataReference[]
+                    {
+                                    MetadataReference.CreateFromFile(typeof(Object).Assembly.Location),
+                                    MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+                                    MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
+                    }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
+
+                var semanticModel = compilation.GetSemanticModel(Tree);
+                var binaryExpressions = Root.DescendantNodes()
+                    .OfType<BinaryExpressionSyntax>()
+                    .OrderBy(x => x.FullSpan)
+                    .ToList();
+
+                var resultingList = new List<SyntaxTreeDiagnosticResult>();
+
+                foreach (var variable in binaryExpressions)
+                {
+                    var startLine = Tree.GetLineSpan(variable.Span).StartLinePosition;
+                    var value = semanticModel.GetConstantValue(variable);
+                    var syntaxResult = new SyntaxTreeDiagnosticResult(startLine.Line, 0, value.Value?.ToString());
+
+                    if (!value.HasValue)
+                    {
+                        var res = new StringBuilder();
+                        foreach (var item in variable.ChildNodesAndTokens())
+                        {
+                            if (item.IsToken)
+                            {
+                                res.Append(item.ToFullString());
+                                continue;
+                            }
+
+                            var expressionValue = semanticModel.GetConstantValue(item.AsNode());
+
+                            if (!expressionValue.HasValue)
+                            {
+                                res.Append(item.ToFullString());
+                            }
+                            else
+                                res.Append(expressionValue.Value?.ToString());
+                        }
+
+                        syntaxResult.LinePosition = -1;
+                        syntaxResult.Message = res.ToString();
+
+                        resultingList.Add(syntaxResult);
+                    }
+                    else
+                        resultingList.Add(syntaxResult);
+                }
+
+                return resultingList;
+            });
         }
 
         public void Compile()

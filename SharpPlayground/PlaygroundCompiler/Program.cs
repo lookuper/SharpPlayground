@@ -32,7 +32,7 @@ namespace PlaygroundCompiler
         {
             var engine = RoslynCompilerFacade.Instance;
 
-            var res = engine.Compile("using System; var i = 6; i = ++i + ++i;");
+            var res = engine.Compile("using System; var i = 6; i = ++i + ++i; i = 3 + 3;");
             
             //var p = new PlaygroundCompilerFacade(PlaygroundCompiler.Properties.Resources.TestCode + "/-i;");
             ////var d = p.GetSourceCodeDiagnostics(p.SourceCode);
