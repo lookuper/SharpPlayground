@@ -63,68 +63,70 @@ namespace PlaygroundCompiler
             return diagMessages;
         }
 
-        public Task<List<SyntaxTreeDiagnosticResult>> Compile(string sourceCode)
+        public List<SyntaxTreeDiagnosticResult> Compile(string sourceCode)
         {
-            return Task.Run(() =>
-            {
-                var errors = GetSourceCodeDiagnostics(sourceCode);
-                if (errors != null && errors.Count > 0)
-                    return errors.ToList();
+            var errors = GetSourceCodeDiagnostics(sourceCode);
+            if (errors != null && errors.Count > 0)
+                return errors.ToList();
 
-                var compilation = CSharpCompilation.Create("TestCompile", new[] { Tree },
-                    new MetadataReference[]
-                    {
-                                    MetadataReference.CreateFromFile(typeof(Object).Assembly.Location),
-                                    MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-                                    MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
-                    }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
-
-                var semanticModel = compilation.GetSemanticModel(Tree);
-                var binaryExpressions = Root.DescendantNodes()
-                    .OfType<BinaryExpressionSyntax>()
-                    .OrderBy(x => x.FullSpan)
-                    .ToList();
-
-                var resultingList = new List<SyntaxTreeDiagnosticResult>();
-
-                foreach (var variable in binaryExpressions)
+            var compilation = CSharpCompilation.Create("TestCompile", new[] { Tree },
+                new MetadataReference[]
                 {
-                    var startLine = Tree.GetLineSpan(variable.Span).StartLinePosition;
-                    var value = semanticModel.GetConstantValue(variable);
-                    var syntaxResult = new SyntaxTreeDiagnosticResult(startLine.Line, 0, value.Value?.ToString());
+                                MetadataReference.CreateFromFile(typeof(Object).Assembly.Location),
+                                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+                                MetadataReference.CreateFromFile(typeof(Thread).Assembly.Location)
+                }, new CSharpCompilationOptions(OutputKind.ConsoleApplication));
 
-                    if (!value.HasValue)
+            var semanticModel = compilation.GetSemanticModel(Tree);
+            var binaryExpressions = Root.DescendantNodes()
+                .OfType<BinaryExpressionSyntax>()
+                .OrderBy(x => x.FullSpan)
+                .ToList();
+
+            var literals = Root.DescendantNodes()
+                .OfType<LiteralExpressionSyntax>()
+                .OrderBy(x => x.FullSpan)
+                .ToList();
+
+            var resultingList = new List<SyntaxTreeDiagnosticResult>();
+
+            foreach (var variable in binaryExpressions)
+            {
+                var startLine = Tree.GetLineSpan(variable.Span).StartLinePosition;
+                var value = semanticModel.GetConstantValue(variable);
+                var syntaxResult = new SyntaxTreeDiagnosticResult(startLine.Line, 0, value.Value?.ToString());
+
+                if (!value.HasValue)
+                {
+                    var res = new StringBuilder();
+                    foreach (var item in variable.ChildNodesAndTokens())
                     {
-                        var res = new StringBuilder();
-                        foreach (var item in variable.ChildNodesAndTokens())
+                        if (item.IsToken)
                         {
-                            if (item.IsToken)
-                            {
-                                res.Append(item.ToFullString());
-                                continue;
-                            }
-
-                            var expressionValue = semanticModel.GetConstantValue(item.AsNode());
-
-                            if (!expressionValue.HasValue)
-                            {
-                                res.Append(item.ToFullString());
-                            }
-                            else
-                                res.Append(expressionValue.Value?.ToString());
+                            res.Append(item.ToFullString());
+                            continue;
                         }
 
-                        syntaxResult.LinePosition = -1;
-                        syntaxResult.Message = res.ToString();
+                        var expressionValue = semanticModel.GetConstantValue(item.AsNode());
 
-                        resultingList.Add(syntaxResult);
+                        if (!expressionValue.HasValue)
+                        {
+                            res.Append(item.ToFullString());
+                        }
+                        else
+                            res.Append(expressionValue.Value?.ToString());
                     }
-                    else
-                        resultingList.Add(syntaxResult);
-                }
 
-                return resultingList;
-            });
+                    syntaxResult.LinePosition = -1;
+                    syntaxResult.Message = res.ToString();
+
+                    resultingList.Add(syntaxResult);
+                }
+                else
+                    resultingList.Add(syntaxResult);
+            }
+
+            return resultingList;
         }
 
         public void Compile()
