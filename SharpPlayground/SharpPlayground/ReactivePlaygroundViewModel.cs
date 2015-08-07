@@ -40,7 +40,6 @@ namespace SharpPlayground
             //DocumentChanged = ReactiveCommand.CreateAsyncTask(async value => { return await compilerFacade.Compile((String)value); });
             DocumentChanged = ReactiveCommand.CreateAsyncTask(async value => { return await FillOutput(compilerFacade.Compile((String)value)); });
 
-
             this.ObservableForProperty(x => x.SourceCode)
                 .Throttle(TimeSpan.FromMilliseconds(700))
                 .Select(x => x.Value)
@@ -57,7 +56,7 @@ namespace SharpPlayground
         private ReactiveList<LineResult> EmptyLineResult(int lines)
         {
             var generatedEmptyLines = Enumerable.Range(1, lines)
-                .Select(x => new LineResult { Line = x, Value = x.ToString(), CanExpand = false })
+                .Select(x => new LineResult { Line = x, Value = String.Empty, CanExpand = false })
                 .ToList();
 
             return new ReactiveList<LineResult>(generatedEmptyLines);

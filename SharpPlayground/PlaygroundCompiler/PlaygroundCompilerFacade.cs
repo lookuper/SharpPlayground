@@ -81,16 +81,18 @@ namespace PlaygroundCompiler
             var binaryExpressions = Root.DescendantNodes()
                 .OfType<BinaryExpressionSyntax>()
                 .OrderBy(x => x.FullSpan)
+                .Cast<ExpressionSyntax>()
                 .ToList();
 
             var literals = Root.DescendantNodes()
                 .OfType<LiteralExpressionSyntax>()
                 .OrderBy(x => x.FullSpan)
+                .Cast<ExpressionSyntax>()
                 .ToList();
 
             var resultingList = new List<SyntaxTreeDiagnosticResult>();
 
-            foreach (var variable in binaryExpressions)
+            foreach (var variable in binaryExpressions.Concat(literals))
             {
                 var startLine = Tree.GetLineSpan(variable.Span).StartLinePosition;
                 var value = semanticModel.GetConstantValue(variable);
