@@ -92,7 +92,7 @@ namespace PlaygroundCompiler
 
             var resultingList = new List<SyntaxTreeDiagnosticResult>();
 
-            foreach (var variable in binaryExpressions.Concat(literals))
+            foreach (var variable in literals.Concat(binaryExpressions))
             {
                 var startLine = Tree.GetLineSpan(variable.Span).StartLinePosition;
                 var value = semanticModel.GetConstantValue(variable);

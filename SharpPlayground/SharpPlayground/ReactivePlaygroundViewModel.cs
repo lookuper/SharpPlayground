@@ -37,11 +37,10 @@ namespace SharpPlayground
         public ReactivePlaygroundViewModel()
         {
             //var canSearch = this.WhenAny(x => x.SourceCode, x => !String.IsNullOrWhiteSpace(x.Value));
-            //DocumentChanged = ReactiveCommand.CreateAsyncTask(async value => { return await compilerFacade.Compile((String)value); });
             DocumentChanged = ReactiveCommand.CreateAsyncTask(async value => { return await FillOutput(compilerFacade.Compile((String)value)); });
 
             this.ObservableForProperty(x => x.SourceCode)
-                .Throttle(TimeSpan.FromMilliseconds(700))
+                .Throttle(TimeSpan.FromMilliseconds(800))
                 .Select(x => x.Value)
                 .Where(value => !String.IsNullOrEmpty(value))
                 .InvokeCommand(DocumentChanged);
