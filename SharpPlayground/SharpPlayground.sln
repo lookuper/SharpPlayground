@@ -55,6 +55,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{CCEE3FA5-B073-4758-9DB9-2339B7BD088B}"
 	ProjectSection(SolutionItems) = preProject
 		..\Screenshots\RxUI.gif = ..\Screenshots\RxUI.gif
+		..\Screenshots\SharpPlaygroundDemo.gif = ..\Screenshots\SharpPlaygroundDemo.gif
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RoslynManualBuild", "RoslynManualBuild", "{AEE29C16-BD7C-4E49-8711-26D4BB5784AF}"
