@@ -10,7 +10,7 @@ Based on Roslyn API.
 - responsive UI
   
 ### SharpPlayground v0.1 (beta) Demo:
-![demo] (Screenshots/SharpPlaygroundDemo.gif)
+![demo](https://github.com/lookuper/SharpPlayground/blob/master/Screenshots/SharpPlaygroundDemo.gif)
 
 ### Dependencies
 - AvalonEdit
